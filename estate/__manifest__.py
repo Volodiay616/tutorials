@@ -5,9 +5,10 @@
     'name': 'Estate',
     'depends': ['base_setup', 'sale'],
     'application': False,
-    'installable': True
+    'installable': True,
     'data':[
-        'security/ir.model.access.csv'
+        'security/ir.model.access.csv',
+        'views/estate_menus.xml',
     ]
     
 }
