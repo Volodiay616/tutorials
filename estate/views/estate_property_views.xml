@@ -4,29 +4,33 @@
         <field name="name">estate.property.tree</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
-            <tree string="Estate">
+            <tree string="Properties" 
+                  decoration-success="state=='offer received' or state=='offer accepted'"                  
+                  decoration-bf="state=='offer accepted'"
+                  decoration-muted="state=='sold'">
                 <field name="name" string="Title"/>
+                <field name="state" invisible="1"/>
                 <field name="postcode" string="Postcode"/>
                 <field name="bedrooms" string="Bedrooms"/>
                 <field name="living_area" string="Living Area (sqm)"/>
                 <field name="expected_price" string="Expected Price"/>
                 <field name="selling_price" string="Selling Price"/>
-                <field name="date_availability" string="Available From"/>
+                <field name="date_availability" string="Available From" optional="hide"/>
                 <field name="property_type_id" string="Property Type"/>
-                <field name="tag_ids" string="Tags" widget="many2many_tags"/>
+                <field name="tag_ids" string="Tags" widget="many2many_tags" options="{'color_field': 'color'}"/>
             </tree>
         </field>
     </record>
 
-    <record id="view_estate_property_filter" model="ir.ui.view">
+    <record id="estate_property_view_filter" model="ir.ui.view">
         <field name="name">estate_property_filter</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
-            <search string="Estate search">
+            <search string="Properties search">
                 <field name="name" string="Title"/>
                 <field name="postcode" string="Postcode"/>
                 <field name="bedrooms" string="Bedrooms"/>
-                <field name="living_area" string="Living Area (sqm)"/>
+                <field name="living_area" string="Living Area (sqm)" filter_domain="[('living_area', '>=', self)]"/>
                 <field name="expected_price" string="Expected Price"/>
                 <field name="facades" string="Facades"/>
                 <filter name="filter_availability" string="Availabile" domain="['|', ('state', '=', 'new'), ('state', '=', 'offer recieved')]"/>
@@ -36,23 +40,28 @@
         </field>
     </record>
 
-    <record id="estate_property_view_form" model="ir.ui.view">
+      <record id="estate_property_view_form" model="ir.ui.view">
         <field name="name">estate.property.form</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
-            <form string="Estate">
+            <form string="Properties">
+                <header>
+                    <button name="action_set_sold_state" type="object" string="Sold" states="new, offer received, offer accepted"/>
+                    <button name="action_set_canceled_state" type="object" string="Cancel" states="new, offer received, offer accepted"/>
+                    <field name="state" widget="statusbar" statusbar_visible=""/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
                             <field name="name"/>
                         </h1>
                         <h2>
-                            <field name="tag_ids" widget="many2many_tags"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                         </h2>
                     </div>
                     <group name="estate_property_header">
                         <group name="estate_details">
-                            <field name="property_type_id" string="Property Type"/>                           
+                            <field name="property_type_id" string="Property Type" options="{'no_open':True,'no_create': True}"/>                          
                             <field name="postcode" string="Postcode"/>
                             <field name="date_availability" string="Available From"/>                
                         </group>
@@ -61,35 +70,31 @@
                             <field name="best_price" string="Best Offer"/>
                             <field name="selling_price" string="Selling Price"/> 
                         </group>
-                        <notebook>
-                            <page string="Description">
-                                <group>
-                                    <field name="description" string="Description"/>
-                                    <field name="bedrooms" string="Bedrooms"/>
-                                    <field name="living_area" string="Living Area (sqm)"/>
-                                    <field name="facades" string="Facades"/>
-                                    <field name="garage" string="Garage"/>
-                                    <field name="garden" string="Garden"/>
-                                    <field name="garden_area" string="Garden Area (sqm)"/>
-                                    <field name="garden_orientation" string="Garden Orientation"/>
-                                    <field name="total_area" string="Total Area (sqm)"/>
-                                </group>
-                            </page>
-                            <page name="offers" string="Offers">
-                                <form>
-                                    <tree>                            
-                                        <field name="offer_ids"/>
-                                    </tree>
-                                </form>                                            
-                            </page>
-                            <page string="Other info">
-                                <group>
-                                    <field name="partner_id"/>
-                                    <field name="salesperson_id"/>
-                                </group>
-                            </page>
-                        </notebook>              
                     </group>
+                    <notebook>
+                        <page string="Description">
+                            <group>
+                                <field name="description" string="Description"/>
+                                <field name="bedrooms" string="Bedrooms"/>
+                                <field name="living_area" string="Living Area (sqm)"/>
+                                <field name="facades" string="Facades"/>
+                                <field name="garage" string="Garage"/>
+                                <field name="garden" string="Garden"/>
+                                <field name="garden_area" string="Garden Area (sqm)" attrs="{'invisible': [('garden', '=', False)]}"/>
+                                <field name="garden_orientation" string="Garden Orientation" attrs="{'invisible': [('garden', '=', False)]}"/>                                    
+                                <field name="total_area" string="Total Area (sqm)"/>
+                            </group>
+                        </page>
+                        <page name="offers" string="Offers">
+                            <field name="offer_ids" attrs="{'readonly': [('state', 'in', ['sold', 'offer accepted', 'canceled'])]}"/>                                       
+                        </page>
+                        <page string="Other info">
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="salesperson_id"/>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
