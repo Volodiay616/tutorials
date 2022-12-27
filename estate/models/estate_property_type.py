@@ -16,8 +16,7 @@ class EstatePropertyType (models.Model):
     def _get_offer(self):
         """Counts the number of offers for a given property type"""
         for rec in self:
-            x = rec.offer_ids
-            rec.offer_count = len(x)
+            rec.offer_count = len(rec.offer_ids)
     
     _sql_constraints = [
         ('estate_property_type_unique', 'unique("name")',

@@ -1,7 +1,6 @@
 from odoo import fields, models, api
-from datetime import date, time, datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.exceptions import UserError
 
 class EstatePropertyOffer (models.Model):
     _name = "estate.property.offer"

@@ -1,8 +1,6 @@
 from odoo import fields, models, api
-from odoo.tools import float_utils
-from datetime import date, time, datetime
 from dateutil.relativedelta import relativedelta
-from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 class EstateProperty(models.Model):
     _name = "estate.property"
@@ -47,7 +45,7 @@ class EstateProperty(models.Model):
         
     @api.depends('living_area', 'garden_area')
     def _compute_total_area(self):
-        """Calculates the total area of the property"""  
+        """Calculates the total area of the property"""
         for line in self:
             line.total_area = line.living_area + line.garden_area
             
@@ -90,7 +88,7 @@ class EstateProperty(models.Model):
     
     @api.constrains('selling_price', 'expected_price')
     def _check_selling_price(self):
-        """Chek """
+        """:selling price must be at least 90% of the expected price"""
         for rec in self:
            if rec.selling_price != 0 and (rec.selling_price / rec.expected_price * 100) < 90:
                 raise ValidationError("The selling price must be at least 90'%' of the expected price! You must reduce the expected price if you want to accept this offer.")
