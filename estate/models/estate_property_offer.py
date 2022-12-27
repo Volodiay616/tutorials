@@ -14,19 +14,8 @@ class EstatePropertyOffer (models.Model):
     property_id = fields.Many2one ("estate.property", required=True)
     validity = fields.Integer(default="7")
     date_deadline = fields.Date(string="Deadline", compute="_compute_date_deadline", inverse="_inverse_date_deadline")
-    property_type_id = fields.Many2one(compute="_compute_property_type_id", store=True)
-    # property_type_id = fields.Many2one(ralated="property_id.property_type_id", store=True)
-            
-    @api.depends("property_id.property_type_id")
-    def _compute_property_type_id(self):
-        """Compute property_type_id for offer
+    property_type_id = fields.Many2one(related="property_id.property_type_id", store=True)
         
-        Thanks to this field, an offer will be linked to a property type when it is created.
-        """
-        for record in self:
-            x = record.property_id.property_type_id.id
-            record.property_type_id = x
-    
     _sql_constraints = [
         ('check_offered_price', 'CHECK("price" > 0)',
          'The offered price must be strictly positive'),
@@ -64,5 +53,6 @@ class EstatePropertyOffer (models.Model):
             self.property_id.selling_price = ""
             self.property_id.partner_id = []
         return True
+    
    
             
