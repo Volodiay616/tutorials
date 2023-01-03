@@ -1,6 +1,6 @@
 from odoo import fields, models, api
 from dateutil.relativedelta import relativedelta
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 class EstatePropertyOffer (models.Model):
     _name = "estate.property.offer"
@@ -10,7 +10,7 @@ class EstatePropertyOffer (models.Model):
     price = fields.Float(required=True)
     status = fields.Selection(selection=[("accepted", "Accepted"), ("refused", "Refused")], copy=False)
     partner_id = fields.Many2one("res.partner", required=True)
-    property_id = fields.Many2one ("estate.property", required=True)
+    property_id = fields.Many2one ("estate.property")
     validity = fields.Integer(default="7")
     date_deadline = fields.Date(string="Deadline", compute="_compute_date_deadline", inverse="_inverse_date_deadline")
     property_type_id = fields.Many2one(related="property_id.property_type_id", store=True)
@@ -53,5 +53,14 @@ class EstatePropertyOffer (models.Model):
             self.property_id.partner_id = []
         return True
     
-   
-            
+    @api.model
+    def create(self, vals):
+        """Add new offer only if price not lower than the best_price"""
+        estate = self.env['estate.property'].browse(vals['property_id'])
+        best_offer = estate.best_price
+        if vals['price'] >= best_offer:
+            estate.state = 'offer received'
+            return super().create(vals)
+        else:
+            raise UserError('The offer must be higer than %(price)s.')
+                    

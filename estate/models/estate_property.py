@@ -30,12 +30,12 @@ class EstateProperty(models.Model):
         )
     property_type_id = fields.Many2one("estate.property.type", string="Property Type")
     partner_id = fields.Many2one("res.partner", string="Buyer", readonly=True, copy=False)
-    salesperson_id = fields.Many2one("res.users", string="Salesman", default=lambda self: self.env.user)
+    salesperson_id = fields.Many2one("res.user", string="Salesman", default=lambda self: self.env.user)
     tag_ids = fields.Many2many("estate.property.tag")
     offer_ids = fields.One2many("estate.property.offer", "property_id")
     total_area = fields.Integer(compute="_compute_total_area")
     best_price = fields.Float(compute="_compute_best_price")
-    
+         
     _sql_constraints = [
         ('check_expected_price', 'CHECK("expected_price" > 0)',
          'The expected price must be strictly positive'),
@@ -93,4 +93,10 @@ class EstateProperty(models.Model):
            if rec.selling_price != 0 and (rec.selling_price / rec.expected_price * 100) < 90:
                 raise ValidationError("The selling price must be at least 90'%' of the expected price! You must reduce the expected price if you want to accept this offer.")
     
-               
+    def unlink(self):
+        """allows to delete only New or Canceled propertyes"""
+        for rec in self:
+            if rec.state not in ('new', 'canceled'):
+                raise UserError('Only New or Canceled Propertyes can be deleted')
+            else:
+                return super(EstateProperty, self).unlink()   
