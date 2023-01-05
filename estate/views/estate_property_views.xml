@@ -46,8 +46,8 @@
         <field name="arch" type="xml">
             <form string="Properties">
                 <header>
-                    <button name="action_set_sold_state" type="object" string="Sold" states="new, offer received, offer accepted"/>
-                    <button name="action_set_canceled_state" type="object" string="Cancel" states="new, offer received, offer accepted"/>
+                    <button name="action_set_sold_state" type="object" string="Sold" states="offer accepted"/>
+                    <button name="action_set_canceled_state" type="object" string="Cancel" states="new,offer received"/>
                     <field name="state" widget="statusbar" statusbar_visible=""/>
                 </header>
                 <sheet>
@@ -99,4 +99,42 @@
             </form>
         </field>
     </record>
+
+    <record model="ir.ui.view" id="estate_property_view_kanban">
+        <field name="name">estate.property.kanban</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="property_type_id" records_draggable="0">
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="row mb4">
+                                <div class="col-6 o_kanban_record_headings">
+                                    <strong>
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="mx-auto">
+                                Expected Price: <field name="expected_price"/>
+                            </div>
+                            <div class="mx-auto">
+                                <t t-if="record.state.raw_value == 'offer received'">
+                                    Best Offer: <field name="best_price"/>
+                                </t>
+                                <t t-if="record.state.raw_value == 'offer accepted'">
+                                    Selling Price: <field name="selling_price"/> 
+                                </t>
+                            </div>
+                            <div class="mx-auto">
+                                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
 </odoo>

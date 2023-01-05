@@ -40,7 +40,8 @@ class EstatePropertyOffer (models.Model):
             if "accepted" not in self.property_id.offer_ids.mapped('status'):       
                 record.status = "accepted"
                 self.property_id.selling_price = record.price
-                self.property_id.partner_id = record.partner_id                
+                self.property_id.partner_id = record.partner_id
+                self.property_id.state = 'offer accepted'          
             else:
                 raise UserError('You cannot accept multiple offers')
         return True
@@ -48,19 +49,24 @@ class EstatePropertyOffer (models.Model):
     def action_refuse_status(self):
         """Refuses the offer"""
         for record in self:
-            record.status = "refused"
-            self.property_id.selling_price = ""
-            self.property_id.partner_id = []
+            if "sold" not in self.property_id.mapped('state'):
+                record.status = "refused"
+                self.property_id.selling_price = ""
+                self.property_id.partner_id = []
+                self.property_id.state = 'offer received'
+            else:
+                raise UserError('You cannot refuse an offer from a sold property')
         return True
     
     @api.model
     def create(self, vals):
         """Add new offer only if price not lower than the best_price"""
+        
         estate = self.env['estate.property'].browse(vals['property_id'])
         best_offer = estate.best_price
         if vals['price'] >= best_offer:
             estate.state = 'offer received'
             return super().create(vals)
         else:
-            raise UserError('The offer must be higer than %(price)s.')
+            raise UserError('The offer must be higer than %(best_offer)s.')
                     
