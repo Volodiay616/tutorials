@@ -41,7 +41,7 @@ class EstatePropertyOffer (models.Model):
                 record.status = "accepted"
                 self.property_id.selling_price = record.price
                 self.property_id.partner_id = record.partner_id
-                self.property_id.state = 'offer accepted'          
+                self.property_id.state = 'offer accepted'        
             else:
                 raise UserError('You cannot accept multiple offers')
         return True
@@ -61,7 +61,6 @@ class EstatePropertyOffer (models.Model):
     @api.model
     def create(self, vals):
         """Add new offer only if price not lower than the best_price"""
-        
         estate = self.env['estate.property'].browse(vals['property_id'])
         best_offer = estate.best_price
         if vals['price'] >= best_offer:

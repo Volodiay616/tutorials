@@ -29,8 +29,7 @@
           "args": [
             "--config=/home/odoo/odoo/14.0/conf/odoo-docker-bootcamp.conf",
             "--database=14_tutorial_1",
-            "--update=estate",
-            // "--update=product_promote",
+            "--update=estate"
           ],
           "file": "home/odoo/odoo/14.0/odoo/odoo-bin"
         },
@@ -40,7 +39,7 @@
         "type": "docker-run",
         "label": "docker-run: tower tests",
         "dockerRun": {
-          "containerName": "tower-14",
+          "containerName": "tutorial-14",
           "image": "odoo-x86",
           "volumes": [
             {
@@ -62,8 +61,8 @@
         "python": {
           "args": [
             "--config=/home/odoo/odoo/14.0/conf/odoo-docker-bootcamp.conf",
-            "--database=14_14_tutorial_test",
-            // "--init=sale_order_line_number",
+            "--database=14_tutorial_test",
+            "--init=estate",
             "--test-enable",
             "--stop-after-init",
           ],

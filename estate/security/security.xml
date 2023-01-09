@@ -1,26 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="group_sale_senior_salesman" model="res.groups">
-        <field name="name">Senior Salesman</field>
-        <field name="comment">Senior Salesman can see all sale order Tags</field>
-        <!-- <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/> -->
-        <!-- <field name="category_id" ref="model_sale_order_line_tag"/> -->
+    <record id="estate_group_user" model="res.groups">
+        <field name="name">Agent</field>
+        <field name="comment">Real estate Agent</field>
+        <field name="category_id" ref="base.module_category_real_estate_brokerage"/>
     </record>
-
-    <record id="sale_order_line_tag_personal_rule" model="ir.rule">
-        <field name="name">Personal Order Line Tags</field>
-        <field ref="model_sale_order_line_tag" name="model_id"/>
-        <field name="domain_force">['|',('salesman_id','=',user.id),('salesman_id','=',False)]</field>
-        <!-- <field name="domain_force">[('create_uid','=',user.id)]</field> -->
-        <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
-    </record>
-
-    <record id="sale_order_line_tag_see_all" model="ir.rule">
-        <field name="name">All Orders Line Tags</field>
-        <field ref="model_sale_order_line_tag" name="model_id"/>
-        <field name="domain_force">[(1,'=',1)]</field>
-        <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/>
+    
+    <record id="estate_group_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="comment">Real estate Manager</field>
+        <field name="category_id" ref="base.module_category_real_estate_brokerage"/>
+        <field name="implied_ids" eval="[(4, ref('estate_group_user'))]"/>
     </record>
 
 </odoo>

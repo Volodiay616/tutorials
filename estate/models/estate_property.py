@@ -93,6 +93,13 @@ class EstateProperty(models.Model):
            if rec.selling_price != 0 and (rec.selling_price / rec.expected_price * 100) < 90:
                 raise ValidationError("The selling price must be at least 90'%' of the expected price! You must reduce the expected price if you want to accept this offer.")
     
+    @api.constrains('state')
+    def _check_state(self):
+        """does not allow to change the state for the sold property"""
+        for rec in self:
+           if rec.state == 'sold':
+                raise ValidationError("It is forbidden to change the state for the sold property")
+    
     def unlink(self):
         """allows to delete only New or Canceled propertyes"""
         for rec in self:
