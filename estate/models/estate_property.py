@@ -42,6 +42,13 @@ class EstateProperty(models.Model):
         ('check_selling_price', 'CHECK("selling_price" >= 0)',
          'The selling price must be strictly positive')
     ]
+    
+    # @api.constrains('state')
+    # def _check_state(self):
+    #     """does not allow to change the state for the sold property"""
+    #     for rec in self:
+    #        if rec.state == 'sold':
+    #             raise ValidationError("It is forbidden to change the state for the sold property")
         
     @api.depends('living_area', 'garden_area')
     def _compute_total_area(self):
@@ -92,13 +99,6 @@ class EstateProperty(models.Model):
         for rec in self:
            if rec.selling_price != 0 and (rec.selling_price / rec.expected_price * 100) < 90:
                 raise ValidationError("The selling price must be at least 90'%' of the expected price! You must reduce the expected price if you want to accept this offer.")
-    
-    @api.constrains('state')
-    def _check_state(self):
-        """does not allow to change the state for the sold property"""
-        for rec in self:
-           if rec.state == 'sold':
-                raise ValidationError("It is forbidden to change the state for the sold property")
     
     def unlink(self):
         """allows to delete only New or Canceled propertyes"""
