@@ -6,6 +6,7 @@
     "website": "https://github.com/Volodiay616/tutorials",
     "license": "AGPL-3",
     "author": "Vladimir",
+    "license": "AGPL-3",
     "depends": ["base_setup", "sale"],
     "category": "Real Estate/Brokerage",
     "application": False,
