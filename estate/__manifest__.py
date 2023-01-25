@@ -4,6 +4,7 @@
     "name": "Estate",
     "version": "14.0.0.0.1",
     "author": "Vladimir",
+    "license": "AGPL-3",
     "depends": ["base_setup", "sale"],
     "application": False,
     "installable": True,
