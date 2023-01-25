@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from xml.dom import ValidationErr
 
 from dateutil.relativedelta import relativedelta
