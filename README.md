@@ -7,9 +7,9 @@
 
 <!-- /!\ do not modify above this line -->
 
-# tutorial modules
+# Odoo 14 tutorial
 
-my solution tutorial odoo 14.0
+My solution of Odoo 14 tutorial
 
 <!-- /!\ do not modify below this line -->
 
@@ -27,7 +27,7 @@ This part will be replaced when running the oca-gen-addons-table script from OCA
 
 This repository is licensed under [AGPL-3.0](LICENSE).
 
-However, each module can have a totally different license, as long as they adhere to my tutorial
+However, each module can have a totally different license, as long as they adhere to Vladimir
 policy. Consult each module's `__manifest__.py` file, which contains a `license` key
 that explains its license.
 
