@@ -9,7 +9,7 @@
 
 # Odoo 14 tutorial
 
-My solution of Odoo 14 tutorial
+This is my solution of Odoo 14 tutorial
 
 <!-- /!\ do not modify below this line -->
 
