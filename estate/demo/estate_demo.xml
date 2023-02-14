@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="estate_property_1" model="estate.property">
       <field name="name">Big Villa</field>
@@ -29,5 +29,5 @@
       <field name="facades">4</field>
       <field name="garage">False</field>
     </record>
-  
+
 </odoo>

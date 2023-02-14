@@ -1,45 +1,55 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="estate_property_type_view_tree" model="ir.ui.view">
         <field name="name">estate.property.type.tree</field>
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
             <tree string="Types">
-                <field name="sequence" widget="handle"/>
-                <field name="name" string="Type"/>
+                <field name="sequence" widget="handle" />
+                <field name="name" string="Type" />
             </tree>
         </field>
     </record>
-    
+
     <record id="estate_property_type_view_form" model="ir.ui.view">
         <field name="name">estate.property.type.form</field>
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                    <div class="oe_button_box d-flex justify-content-end" name="button_box">
-                        <button type="action" name="%(estate.action_estate_property_offer_view)d" icon="fa-handshake-o">
-                            <field name="offer_count"/>
+                    <div
+                        class="oe_button_box d-flex justify-content-end"
+                        name="button_box"
+                    >
+                        <button
+                            type="action"
+                            name="%(estate.action_estate_property_offer_view)d"
+                            icon="fa-handshake-o"
+                        >
+                            <field name="offer_count" />
                             <span class="o_stat_text">Offers</span>
                         </button>
                     </div>
                     <div class="oe_title">
                         <h1>
-                            <field name="name"/>
-                        </h1>                   
+                            <field name="name" />
+                        </h1>
                     </div>
                     <notebook>
                         <page string="Properties">
                             <field name="property_ids">
                                 <tree>
-                                    <field name="name" string="Title"/>
-                                    <field name="expected_price" string="Expected Price"/>
-                                    <field name="state" string="Status"/>               
+                                    <field name="name" string="Title" />
+                                    <field
+                                        name="expected_price"
+                                        string="Expected Price"
+                                    />
+                                    <field name="state" string="Status" />
                                 </tree>
-                            </field>                            
+                            </field>
                         </page>
                     </notebook>
-                </sheet> 
+                </sheet>
             </form>
         </field>
     </record>
