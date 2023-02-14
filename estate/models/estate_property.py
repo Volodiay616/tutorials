@@ -1,8 +1,7 @@
-from xml.dom import ValidationErr
-
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class EstateProperty(models.Model):
@@ -70,14 +69,14 @@ class EstateProperty(models.Model):
         ),
     ]
 
-    @api.constrains("state")
-    def _check_state(self):
-        """does not allow to change the state for the sold property"""
-        for rec in self:
-            if rec.state == "sold":
-                raise ValidationErr(
-                    "It is forbidden to change the state for the sold property"
-                )
+    # @api.constrains("state")
+    # def _check_state(self):
+    #     """does not allow to change the state for the sold property"""
+    #     for rec in self:
+    #         if rec.state == "sold":
+    #             raise ValidationError(
+    #                 "It is forbidden to change the state for the sold property"
+    #             )
 
     @api.depends("living_area", "garden_area")
     def _compute_total_area(self):
@@ -88,13 +87,14 @@ class EstateProperty(models.Model):
     @api.depends("offer_ids.price")
     def _compute_best_price(self):
         """Determines the offer with a higher price"""
-        for record in self:
-            if record.state != "new" or "canceled":
-                record.best_price = max(record.offer_ids.mapped("price"))
-            # try:
-            #     record.best_price = max(record.offer_ids.mapped("price"))
-            # except Exception:
-            #     record.best_price == 0
+        for rec in self:
+            # if rec.state != "new" or "canceled":
+            #     if rec.offer_ids.ids != []:
+            #         rec.best_price = max(rec.offer_ids.mapped("price"))
+            try:
+                rec.best_price = max(rec.offer_ids.mapped("price"))
+            except Exception:
+                rec.best_price = 0
 
     @api.onchange("garden")
     def _onchange_garden(self):
@@ -112,7 +112,7 @@ class EstateProperty(models.Model):
             if record.state != "canceled":
                 record.state = "sold"
             else:
-                raise ValidationErr("Canceled properties cannot be sold.")
+                raise ValidationError(_("Canceled properties cannot be sold."))
         return True
 
     def action_set_canceled_state(self):
@@ -121,7 +121,7 @@ class EstateProperty(models.Model):
             if record.state != "sold":
                 record.state = "canceled"
             else:
-                raise ValidationErr("Sold properties cannot be canceled.")
+                raise ValidationError(_("Sold properties cannot be canceled."))
         return True
 
     @api.constrains("selling_price", "expected_price")
@@ -132,15 +132,19 @@ class EstateProperty(models.Model):
                 rec.selling_price != 0
                 and (rec.selling_price / rec.expected_price * 100) < 90
             ):
-                raise ValidationErr(
-                    "The selling price must be at least 90'%' of the expected price!"
-                    "You must reduce the expected price if you want to accept this offer."
+                raise ValidationError(
+                    _(
+                        "The selling price must be at least 90'%' of the expected price!"
+                        "You must reduce the expected price if you want to accept this offer."
+                    )
                 )
 
     def unlink(self):
         """allows to delete only New or Canceled propertyes"""
         for rec in self:
             if rec.state not in ("new", "canceled"):
-                raise ValidationErr("Only New or Canceled Propertyes can be deleted")
+                raise ValidationError(
+                    _("Only New or Canceled Propertyes can be deleted")
+                )
             else:
                 return super(EstateProperty, self).unlink()

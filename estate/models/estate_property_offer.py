@@ -1,8 +1,7 @@
-from xml.dom import ValidationErr
-
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class EstatePropertyOffer(models.Model):
@@ -61,7 +60,7 @@ class EstatePropertyOffer(models.Model):
                 self.property_id.partner_id = record.partner_id
                 self.property_id.state = "offer accepted"
             else:
-                raise ValidationErr("You cannot accept multiple offers")
+                raise ValidationError(_("You cannot accept multiple offers"))
         return True
 
     def action_refuse_status(self):
@@ -73,7 +72,9 @@ class EstatePropertyOffer(models.Model):
                 self.property_id.partner_id = []
                 self.property_id.state = "offer received"
             else:
-                raise ValidationErr("You cannot refuse an offer from a sold property")
+                raise ValidationError(
+                    _("You cannot refuse an offer from a sold property")
+                )
         return True
 
     @api.model
@@ -85,4 +86,4 @@ class EstatePropertyOffer(models.Model):
             estate.state = "offer received"
             return super().create(vals)
         else:
-            raise ValidationErr("The offer must be higer than %(best_offer)s.")
+            raise ValidationError(_("The offer must be higer than '%(best_offer)s'."))
